@@ -20,6 +20,8 @@
 #include "jni/src/MediaDrmOnEventListener.h"
 #include "jni/src/UUID.h"
 
+#include "crypto_session_jni.h"
+
 #include "../src/helpers.h"
 #include "../src/SSD_dll.h"
 #include "../src/md5.h"
@@ -912,6 +914,7 @@ public:
     : CJNIMediaDrmOnEventListener(dexPath)
     , key_system_(NONE)
     , cdmsession_(nullptr)
+    , crypto_server_(nullptr)
   {
 #ifdef DRMTHREAD
     std::unique_lock<std::mutex> lk(jniMutex_);
@@ -930,6 +933,7 @@ public:
 
   ~WVDecrypter()
   {
+    delete crypto_server_;
     delete cdmsession_;
     cdmsession_ = nullptr;
 
@@ -976,8 +980,9 @@ public:
       return false;
 
     cdmsession_ = new WV_DRM(key_system_, licenseURL, serverCertificate, this);
+    crypto_server_ = new CryptoServer(4711);
 
-    return cdmsession_->GetMediaDrm();
+    return cdmsession_->GetMediaDrm() != nullptr;
   }
 
   virtual AP4_CencSingleSampleDecrypter *CreateSingleSampleDecrypter(AP4_DataBuffer &pssh, const char *optionalKeyParameter, const uint8_t *defaultkeyid) override
@@ -1065,6 +1070,7 @@ public:
 private:
   WV_KEYSYSTEM key_system_;
   WV_DRM *cdmsession_;
+  CryptoServer *crypto_server_;
   std::vector<WV_CencSingleSampleDecrypter*> decrypterList;
   std::mutex decrypterListMutex;
 
