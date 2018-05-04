@@ -23,6 +23,7 @@ build_script:
   - cd build
   - cmake -T host=x64 -G "%GENERATOR%" %WINSTORE% -DADDONS_TO_BUILD=%app_id% -DCMAKE_BUILD_TYPE=%CONFIG% -DADDON_SRC_PREFIX=../.. -DCMAKE_INSTALL_PREFIX=../../xbmc/addons -DPACKAGE_ZIP=1 ../../xbmc/cmake/addons
   - cmake --build . --config %CONFIG% --target %app_id%
+  - move ../../xbmc/addons/inputstream.adaptive ../inputstream.adaptive
 
 artifacts:
-  - path: ../xbmc/addons/inputstream.adaptive
+  - path: ./inputstream.adaptive
