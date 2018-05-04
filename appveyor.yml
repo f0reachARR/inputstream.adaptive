@@ -25,4 +25,4 @@ build_script:
   - cmake --build . --config %CONFIG% --target %app_id%
 
 artifacts:
-  - path: C:/projects/xbmc/addons/inputstream.adaptive
+  - path: ../xbmc/addons/inputstream.adaptive
